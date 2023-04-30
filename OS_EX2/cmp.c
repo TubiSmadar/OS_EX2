@@ -26,8 +26,8 @@ int main(int argc, char *argv[]) {
 
     //opening the files for reading
     FILE *f1Read, *f2Read;
-    f1Read = fopen(file1, "r");
-    f2Read = fopen(file2, "r");
+    f1Read = fopen(file1, "rb");
+    f2Read = fopen(file2, "rb");
 
     if (f1Read == NULL || f2Read == NULL) {
         printf("Error in opening one or both files\n");

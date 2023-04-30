@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
+long get_file_size(char *filename);
 int main(int argc, char *argv[]) {
     if (argc < 3 ) {
         printf("The usage should be: cmp <file1> <file2> than [-v]/[-i]\n");
@@ -35,9 +36,10 @@ int main(int argc, char *argv[]) {
 
     int equal = 1;
     int c1, c2;
-
+    
     // checking letter by letter
-    while ((c1 = fgetc(f1Read)) != EOF && (c2 = fgetc(f2Read)) != EOF) {
+
+        while ((c1 = fgetc(f1Read)) != EOF && (c2 = fgetc(f2Read)) != EOF) {
         if (ignore_case) {
             c1 = tolower(c1);     // because of -i flag We will make all characters lowercase
             c2 = tolower(c2);
@@ -48,9 +50,9 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-
+    
     //If we have finished going through all the letters in the file and there is still equality
-    if (equal && fgetc(f1Read) == EOF && fgetc(f2Read) == EOF) {
+    if (equal && fgetc(f1Read) == EOF && fgetc(f2Read) == EOF && get_file_size(file1) == get_file_size(file2)) {
         if (verbose) {
             printf("equal\n");
         }
@@ -63,4 +65,21 @@ int main(int argc, char *argv[]) {
     }
     fclose(f1Read);    //The fclose() function closes a stream pointed to by stream
     fclose(f2Read);
+}
+
+long get_file_size(char *filename) {
+    FILE *fp = fopen(filename, "r");
+
+    if (fp==NULL)
+        return -1;
+
+    if (fseek(fp, 0, SEEK_END) < 0) {
+        fclose(fp);
+        return -1;
+    }
+
+    long size = ftell(fp);
+    // release the resources when not required
+    fclose(fp);
+    return size;
 }
